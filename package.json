@@ -1,0 +1,53 @@
+{
+  "name": "management-data-architect",
+  "version": "1.0.0",
+  "description": "Enterprise-grade data management platform for architecture firms",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --recursive --parallel run dev",
+    "build": "pnpm --recursive run build",
+    "build:web": "cd packages/web && pnpm run build",
+    "build:backend": "cd packages/backend && pnpm run build",
+    "build:desktop": "cd packages/desktop && pnpm run build",
+    "start": "pnpm run dev",
+    "test": "pnpm --recursive run test",
+    "test:coverage": "pnpm --recursive run test:coverage",
+    "test:watch": "pnpm --recursive run test:watch",
+    "test:integration": "pnpm --recursive run test:integration",
+    "test:e2e": "pnpm --recursive run test:e2e",
+    "lint": "pnpm --recursive run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "type-check": "pnpm --recursive run type-check",
+    "clean": "pnpm --recursive run clean && rm -rf node_modules .pnpm-store",
+    "db:migrate": "cd packages/backend && pnpm run db:migrate",
+    "db:seed": "cd packages/backend && pnpm run db:seed",
+    "db:reset": "cd packages/backend && pnpm run db:reset",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.3.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "^5.3.0"
+    }
+  }
+}
