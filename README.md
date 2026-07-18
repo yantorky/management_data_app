@@ -80,7 +80,7 @@ Sebelum memasang aplikasi, pastikan konfigurasi akun dan hak akses dataset pada 
    * **Application Name**: `mda-portal`
    * **Container Image**: Alamat image kontainer privat Anda (misal: `torkykomputer/mda-portal:latest`).
    * **Container Port**: `3000`
-   * **Port Forwarding (Host Port)**: `7777` (atau port pilihan Anda untuk mengakses portal melalui browser web).
+   * **Port Forwarding (Host Port)**: `3030` (atau port pilihan Anda untuk mengakses portal melalui browser web).
 3. Atur Variabel Lingkungan (*Environment Variables*):
    * `NODE_ENV` = `production`
    * `GEMINI_API_KEY` = `(Kunci Server Verifikasi Cloud Anda)`
@@ -90,7 +90,7 @@ Sebelum memasang aplikasi, pastikan konfigurasi akun dan hak akses dataset pada 
 Dari komputer klien di dalam jaringan LAN kantor:
 1. Buka browser web (Chrome, Edge, Firefox, atau Safari).
 2. Akses alamat IP server TrueNAS SCALE beserta port yang dikonfigurasi.
-   * *Format*: `http://[IP_SERVER_TRUENAS]:7777` (misalnya: `http://192.168.1.254:7777`).
+   * *Format*: `http://[IP_SERVER_TRUENAS]:3030` (misalnya: `http://192.168.1.254:3030`).
 
 ---
 

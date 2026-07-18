@@ -1062,20 +1062,6 @@ Raw Notes:
                     </div>
                   </div>
                 </div>
-
-                {/* Subtle Watermark Logo below Region & Time aligned to bottom */}
-                <div className="pt-4 mt-auto flex flex-col items-center justify-center text-center space-y-1.5 animate-fade-in border-t border-slate-800/30">
-                  <img 
-                    src={torkyLogoWatermark} 
-                    alt="Torky Komputer Watermark" 
-                    className="h-[30px] w-auto opacity-40 hover:opacity-95 transition-all duration-300 object-contain select-none"
-                    style={{ mixBlendMode: 'screen', filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)' }}
-                    referrerPolicy="no-referrer"
-                  />
-                  <span className="text-[7.5px] tracking-widest text-slate-500 uppercase font-mono font-bold scale-95 origin-center">
-                    {t.setupWatermarkLabel}
-                  </span>
-                </div>
               </div>
 
               {/* Seksi B: Kredensial Super Admin & Lisensi */}
@@ -1213,6 +1199,23 @@ Raw Notes:
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Subtle Watermark Logo placed beautifully and centered above the submit area */}
+            <div className="pt-5 pb-1 flex flex-col items-center justify-center text-center space-y-1.5 animate-fade-in border-t border-slate-800/30">
+              <img 
+                src={torkyLogoWatermark} 
+                alt="Torky Komputer Watermark" 
+                className="h-[32px] w-auto opacity-30 hover:opacity-85 transition-all duration-300 object-contain select-none"
+                style={{ 
+                  mixBlendMode: 'screen', 
+                  filter: 'invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.6)' 
+                }}
+                referrerPolicy="no-referrer"
+              />
+              <span className="text-[7.5px] tracking-[0.22em] text-slate-500 uppercase font-mono font-bold scale-95">
+                {t.setupWatermarkLabel}
+              </span>
             </div>
 
             {loginError && (
@@ -3580,7 +3583,7 @@ Raw Notes:
                         <li><strong>Application Name:</strong> <code className="text-teal-400 font-mono">data-architect-mda</code></li>
                         <li><strong>Image Repository:</strong> <code className="text-teal-400 font-mono">torkykomputer/mda-vault</code></li>
                         <li><strong>Image Tag:</strong> <code className="text-teal-400 font-mono">latest</code></li>
-                        <li><strong>Port Forwarding (Container Port &gt; Host Port):</strong> Hubungkan port kontainer <code className="text-white font-mono">3000</code> ke port host TrueNAS Anda (Masukkan <code className="text-teal-400 font-mono">7777</code> agar aplikasi dapat diakses melalui port khusus 7777 secara terdedikasi).</li>
+                        <li><strong>Port Forwarding (Container Port &gt; Host Port):</strong> Hubungkan port kontainer <code className="text-white font-mono">3000</code> ke port host TrueNAS Anda (Masukkan <code className="text-teal-400 font-mono">3030</code> agar aplikasi dapat diakses melalui port khusus 3030 secara terdedikasi).</li>
                         <li><strong>Environment Variables:</strong> Tambahkan variabel lingkungan rahasia <code className="text-amber-400 font-mono">GEMINI_API_KEY</code> yang berisi Kunci Server Verifikasi Cloud Anda untuk mengaktifkan fitur pengolah modul deskripsi pekerjaan dan rekrutmen.</li>
                       </ul>
                     </li>
@@ -3595,9 +3598,9 @@ Raw Notes:
                   </p>
                   <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 font-mono text-[11px] text-slate-300">
                     <p className="text-slate-500">:: Alamat Akses Aplikasi di Browser Komputer Klien (Ketik di Google Chrome / Edge):</p>
-                    <p className="text-teal-400 font-bold">http://[IP_TrueNAS_Server]:7777</p>
+                    <p className="text-teal-400 font-bold">http://[IP_TrueNAS_Server]:3030</p>
                     <p className="text-slate-500 mt-1">:: Contoh Nyata:</p>
-                    <p className="text-white font-bold">http://192.168.1.254:7777</p>
+                    <p className="text-white font-bold">http://192.168.1.254:3030</p>
                   </div>
                   <p>
                     Metode arsitektur tersentralisasi ini menjamin aplikasi web Anda aman dari pencurian, terintegrasi penuh ke tangguhnya ZFS storage, serta memudahkan monitoring log compliance ISO 19650 secara real-time.
@@ -3633,7 +3636,7 @@ Raw Notes:
 
                   <p className="font-bold text-slate-200">Panduan Langkah Demi Langkah Aktivasi Lisensi Offline (Untuk Anda):</p>
                   <ol className="list-decimal pl-5 space-y-1 text-slate-400">
-                    <li>Klien menginstal aplikasi di TrueNAS SCALE mereka, membuka halaman web <code className="text-slate-200 font-mono">http://[IP_TrueNAS_Klien]:7777</code>, lalu menyalin <strong>ID Mesin Klien</strong> unik yang otomatis tertera di layar.</li>
+                    <li>Klien menginstal aplikasi di TrueNAS SCALE mereka, membuka halaman web <code className="text-slate-200 font-mono">http://[IP_TrueNAS_Klien]:3030</code>, lalu menyalin <strong>ID Mesin Klien</strong> unik yang otomatis tertera di layar.</li>
                     <li>Klien mengirimkan ID Mesin tersebut kepada Anda melalui pesan/email terenkripsi.</li>
                     <li>Di komputer lokal Anda (<code className="text-slate-200 font-mono">G:\...</code>), klik ganda file <strong>`generate.bat`</strong>.</li>
                     <li>Masukkan ID Mesin Klien pada konsol generator interaktif yang muncul, lalu tekan Enter.</li>
@@ -3659,14 +3662,14 @@ Raw Notes:
                     <p className="font-bold text-slate-300 mt-2 font-sans">Sesi 2: Pimpinan Kantor & Admin Finansial (Sistem Verifikasi & Log Kepatuhan)</p>
                     <ul className="list-disc pl-5 text-[11px] text-slate-400 space-y-1">
                       <li><strong>Hak Istimewa Akses Admin (RBAC):</strong> Ajarkan admin cara memetakan Drive A: (<code className="text-slate-200 font-mono">\\IP_TrueNAS\admin</code>) khusus untuk file keuangan, anggaran, dan hukum. Yakinkan mereka bahwa staf desainer diblokir total oleh TrueNAS dari akses ke drive ini.</li>
-                      <li><strong>Penggunaan Aplikasi Web MDA:</strong> Latih pimpinan untuk login ke aplikasi web MDA di browser (<code className="text-slate-200 font-mono">http://IP_TrueNAS:7777</code>) menggunakan akun Admin mereka untuk mengawasi kepatuhan format nama file kerja arsitek (ISO 19650 Compliance Module), melihat volume log gambar harian, serta mengecek Log Audit (Audit Trail) aktivitas siber guna mendeteksi ancaman pencurian data internal secara real-time.</li>
+                      <li><strong>Penggunaan Aplikasi Web MDA:</strong> Latih pimpinan untuk login ke aplikasi web MDA di browser (<code className="text-slate-200 font-mono">http://IP_TrueNAS:3030</code>) menggunakan akun Admin mereka untuk mengawasi kepatuhan format nama file kerja arsitek (ISO 19650 Compliance Module), melihat volume log gambar harian, serta mengecek Log Audit (Audit Trail) aktivitas siber guna mendeteksi ancaman pencurian data internal secara real-time.</li>
                     </ul>
                   </div>
 
                   <div className="p-3 bg-teal-950/20 border border-teal-900/50 rounded-xl mt-3">
                     <p className="text-[10px] text-teal-400 font-bold">Catatan Keamanan Penting untuk Anda:</p>
                     <p className="text-[10px] text-slate-400 mt-1">
-                      Jika harddisk fisik tempat Anda mengekstrak ZIP di komputer lokal Anda rusak, Anda tidak perlu khawatir kehilangan data. Seluruh source code proyek telah aman di-backup di repositori GitHub privat Anda menggunakan utilitas <code className="text-slate-300 font-mono">auto_push.bat</code>. Anda tinggal mengunduh ulang ZIP proyek dari GitHub Anda, mengekstraknya di drive mana saja, dan generator lisensi offline Anda lewat <code className="text-slate-300 font-mono">generate.bat</code> akan langsung berfungsi normal tanpa ada perubahan konfigurasi apa pun!
+                      Jika harddisk fisik tempat Anda mengekstrak ZIP di komputer lokal Anda rusak, Anda tidak perlu khawatir kehilangan data. Seluruh source code proyek telah aman di-backup di repositori GitHub privat Anda menggunakan utilitas <code className="text-slate-300 font-mono">Auto_Push.bat</code>. Anda tinggal mengunduh ulang ZIP proyek dari GitHub Anda, mengekstraknya di drive mana saja, dan generator lisensi offline Anda lewat <code className="text-slate-300 font-mono">generate.bat</code> akan langsung berfungsi normal tanpa ada perubahan konfigurasi apa pun!
                     </p>
                   </div>
                 </div>

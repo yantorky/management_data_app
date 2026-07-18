@@ -1,4 +1,7 @@
 @echo off
+REM Menggunakan pushd agar mendukung UNC path (TrueNAS / Samba share) secara otomatis jika dijalankan langsung lewat network share
+pushd "%~dp0" 2>nul
+
 title Auto Push Repository - Management Data App
 color 0B
 
@@ -9,28 +12,26 @@ echo  Software: Management Data App (MDA) - Enterprise Vault Edition
 echo  Developer/Owner: Yan Torky / Torky Komputer
 echo =====================================================================
 echo.
+echo [INFO] Direktori Kerja Aktif: %CD%
+echo.
 
-:: Memeriksa apakah Git terinstall menggunakan 'where'
-where git >nul 2>nul
+REM Memeriksa apakah Git terinstall
+git --version >nul 2>&1
 if errorlevel 1 goto NO_GIT
 
-:: Mengatasi error "dubious ownership" (safe.directory) di sistem berkas TrueNAS/Samba/Network Share
+REM Mengatasi error "dubious ownership" (safe.directory) di sistem berkas TrueNAS/Samba/Network Share
 echo [INFO] Mengonfigurasi pengecualian direktori aman (safe.directory)...
-:: Mencegah duplikasi konfigurasi global yang dapat membengkak jika dijalankan berkali-kali
-git config --global --get-all safe.directory | findstr /C:"*" >nul 2>nul
-if errorlevel 1 (
-    git config --global --add safe.directory "*" >nul 2>nul
-)
-git config --global --get-all safe.directory | findstr /C:"%CD:\=/%" >nul 2>nul
-if errorlevel 1 (
-    git config --global --add safe.directory "%CD%" >nul 2>nul
-)
+git config --global safe.directory "*" >nul 2>&1
+git config safe.directory "*" >nul 2>&1
 echo [OK] Izin direktori aman berhasil diaktifkan.
 echo.
 
-:: Memeriksa apakah ini adalah repository Git, jika belum maka inisialisasi
-git rev-parse --is-inside-work-tree >nul 2>nul
-if errorlevel 1 goto INIT_GIT
+REM Memeriksa apakah direktori .git ada untuk melakukan pembersihan berkas kunci (.lock)
+if not exist .git goto INIT_GIT
+echo [INFO] Mendeteksi dan membersihkan file kunci (.lock) Git yang tertinggal...
+del /f /q /s .git\*.lock >nul 2>nul
+echo [OK] Seluruh file kunci (.lock) berhasil dibersihkan secara otomatis.
+echo.
 goto CHECK_REMOTE
 
 :INIT_GIT
@@ -39,11 +40,39 @@ git init
 echo.
 
 :CHECK_REMOTE
-:: Mengonfigurasi remote origin secara otomatis ke repositori tujuan Anda
-echo [0/5] Mengonfigurasi tautan repositori remote...
-git remote remove origin >nul 2>nul
-git remote add origin https://github.com/yantorky/management_data_app
-echo [OK] Remote origin diatur ke: https://github.com/yantorky/management_data_app
+REM Memeriksa apakah remote origin sudah ada dan apakah menggunakan Token (mengandung @github.com)
+set "current_remote="
+for /f "tokens=*" %%i in ('git remote get-url origin 2^>nul') do set "current_remote=%%i"
+
+if "%current_remote%"=="" goto ADD_REMOTE
+
+REM Melakukan pengecekan substring secara aman tanpa menggunakan pipa (pipe) echo untuk menghindari crash karakter spesial
+set "has_token=0"
+echo "%current_remote%" | findstr "@github.com" >nul 2>&1
+if not errorlevel 1 set "has_token=1"
+
+if "%has_token%"=="1" goto DETECTED_TOKEN
+
+echo [INFO] Memperbarui tautan remote origin...
+git remote remove origin >nul 2>&1
+
+:ADD_REMOTE
+echo [INFO] Menambahkan remote origin baru...
+git remote add origin https://github.com/yantorky/management_data_app.git
+goto REMOTE_DONE
+
+:DETECTED_TOKEN
+echo [INFO] Mendeteksi remote origin dengan Token Keamanan yang sudah aktif.
+echo [OK] Menggunakan remote origin yang ada agar tidak perlu input ulang Token.
+
+:REMOTE_DONE
+echo.
+
+REM Mengonfigurasi identitas Git lokal secara langsung untuk mencegah kegagalan commit
+echo [INFO] Memastikan identitas Git lokal terkonfigurasi...
+git config --local user.name "Yan Torky"
+git config --local user.email "torkykomputer@gmail.com"
+echo [OK] Identitas diatur ke: Yan Torky (torkykomputer@gmail.com)
 echo.
 
 echo [1/5] Memeriksa status berkas lokal...
@@ -56,29 +85,20 @@ echo [OK] Berkas berhasil dimasukkan ke staging area.
 echo.
 
 echo [3/5] Melakukan commit perubahan...
-:: Meminta input commit message dengan aman tanpa resiko crash parsing karakter khusus
 set "commit_msg="
 set /p commit_msg="Masukkan catatan perubahan (kosongkan untuk default: 'Update dan Sinkronisasi Repositori MDA'): "
 
-if not defined commit_msg (
-    set "commit_msg=Update dan Sinkronisasi Repositori MDA"
-) else (
-    :: Bersihkan tanda kutip dua untuk menghindari kegagalan parser command line Git
-    set "commit_msg=%commit_msg:"=%"
-)
+if "%commit_msg%"=="" set "commit_msg=Update dan Sinkronisasi Repositori MDA"
+REM Bersihkan karakter kutip ganda dari pesan commit agar tidak merusak perintah git commit
+if not "%commit_msg%"=="" set "commit_msg=%commit_msg:"=%"
 
-git commit -m "%commit_msg%"
-if errorlevel 1 goto NO_CHANGES
-echo [OK] Berkas berhasil dicommit dengan pesan: "%commit_msg%"
-goto MAIN_BRANCH
-
-:NO_CHANGES
-echo [INFO] Tidak ada perubahan berkas baru yang perlu dicommit.
-
-:MAIN_BRANCH
+git commit -m "%commit_msg%" >nul 2>&1
+echo [OK] Pemrosesan commit selesai.
 echo.
+
 echo [4/5] Mengatur branch utama ke 'main'...
-git branch -M main >nul 2>nul
+git branch -M main >nul 2>&1
+echo [OK] Branch lokal diatur ke 'main'.
 echo.
 
 echo [5/5] Melakukan pengiriman data (Push) ke repositori Git...
@@ -116,8 +136,7 @@ echo.
 set "opt="
 set /p opt="Masukkan pilihan Anda (1/2/3/4): "
 
-:: Bersihkan tanda kutip dari input user untuk mencegah crash syntax parser CMD Windows
-if defined opt set "opt=%opt:"=%"
+if not "%opt%"=="" set "opt=%opt:"=%"
 
 if "%opt%"=="1" goto DO_FORCE_PUSH
 if "%opt%"=="2" goto DO_PULL_MERGE
@@ -158,26 +177,29 @@ echo =====================================================================
 echo.
 set "pat_token="
 set /p pat_token="Tempel/Paste GitHub Token Anda disini: "
-if not defined pat_token (
-    echo [ERR] Token tidak boleh kosong!
-    pause
-    goto PUSH_FAILED
-)
+if "%pat_token%"=="" goto AUTH_PAT_EMPTY
 set "pat_token=%pat_token:"=%"
 
 echo [INFO] Mengonfigurasi kredensial remote dengan Token...
-git remote remove origin >nul 2>nul
+git remote remove origin >nul 2>&1
 git remote add origin https://%pat_token%@github.com/yantorky/management_data_app.git
 echo [OK] Remote origin telah diperbarui dengan Token pengaman.
 echo.
 echo Mencoba push kembali menggunakan Token...
 git push origin main
-if errorlevel 1 (
-    echo [INFO] Push standar dengan token gagal, mencoba Force Push dengan token...
-    git push origin main --force
-)
+if errorlevel 1 goto DO_FORCE_PAT
+goto PUSH_SUCCESS
+
+:DO_FORCE_PAT
+echo [INFO] Push standar dengan token gagal, mencoba Force Push dengan token...
+git push origin main --force
 if errorlevel 1 goto ACTUAL_FAILED
 goto PUSH_SUCCESS
+
+:AUTH_PAT_EMPTY
+echo [ERR] Token tidak boleh kosong!
+pause
+goto PUSH_FAILED
 
 :ACTUAL_FAILED
 echo.
@@ -208,8 +230,10 @@ echo Silakan install Git terlebih dahulu dari https://git-scm.com/
 echo Pastikan Anda memilih opsi "Add to PATH" saat mengunduh Git.
 echo.
 pause
+popd
 exit /b
 
 :END_SCRIPT
 echo.
 pause
+popd

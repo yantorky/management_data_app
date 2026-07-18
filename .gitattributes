@@ -1,0 +1,2 @@
+# Mengunci seluruh file batch Windows agar selalu diunduh dengan format CRLF (Windows Line Ending)
+*.bat text eol=crlf
