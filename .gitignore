@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Torky Komputer License Utilities (Protected Offline Tools)
+keygen.cjs
+keygen.js
+generate.bat
+

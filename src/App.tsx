@@ -62,6 +62,8 @@ import {
   ISOCategory
 } from './types';
 import { translations, Language } from './i18n';
+// @ts-ignore
+import torkyLogoWatermark from './assets/images/torky_logo_1784381159887.jpg';
 
 export default function App() {
   // Load State from LocalStorage or Fallback to preloads
@@ -164,15 +166,18 @@ export default function App() {
   const [licenseKey, setLicenseKey] = useState<string>(() => {
     return localStorage.getItem('mda_license_key') || '';
   });
+  const [companyName, setCompanyName] = useState<string>(() => {
+    return localStorage.getItem('mda_company_name') || '';
+  });
 
   const [setupData, setSetupData] = useState({
-    companyName: 'Lanskap Cipta Mandiri',
-    superAdminEmail: 'root_admin@firm.com',
-    superAdminName: 'Yan Torky',
+    companyName: '',
+    superAdminEmail: '',
+    superAdminName: '',
     superAdminPassword: '',
     confirmPassword: '',
-    sambaIp: '192.168.1.150',
-    sambaPool: 'ArchPoolNAS',
+    sambaIp: '',
+    sambaPool: '',
     infrastructureMode: 'TRUENAS' as 'TRUENAS' | 'LOCAL',
     region: 'Indonesia',
     timezone: 'WITA',
@@ -196,6 +201,34 @@ export default function App() {
     }
     const hexHash = Math.abs(hash).toString(16).toUpperCase();
     return `TORKY-SECURE-2026-MDA-${hexHash}`;
+  };
+
+  const copyToClipboard = (text: string) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(() => {
+        fallbackCopyText(text);
+      });
+    } else {
+      fallbackCopyText(text);
+    }
+  };
+
+  const fallbackCopyText = (text: string) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
   };
 
 
@@ -733,10 +766,10 @@ export default function App() {
     }
   };
 
-  // Call Gemini API via Server Route to handle the Recruitment Sandbox & Document Naming logic
+  // Call Secure Cloud Engine via Server Route to handle the Recruitment & Document Naming logic
   const handleAskGemini = async () => {
     if (!rawNotes.trim()) {
-      setAiError('Please enter some raw notes or role requirements.');
+      setAiError('Silakan masukkan catatan mentah atau kebutuhan peran.');
       return;
     }
 
@@ -774,7 +807,7 @@ Raw Notes:
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate response from Gemini API.');
+        throw new Error(data.error || 'Gagal memproses draf dari Cloud Server.');
       }
 
       const text = data.text;
@@ -790,10 +823,10 @@ Raw Notes:
         setInterviewGuide('Included within the main response panel.');
       }
 
-      addAuditLog('CREATE', 'USER', 'gemini-api', 'Recruitment Agent', `Generated Job Description and Interview Guide for raw notes: "${rawNotes.substring(0, 30)}..."`);
+      addAuditLog('CREATE', 'USER', 'cloud-recruitment', 'Sistem Rekrutmen', `Generated Job Description and Interview Guide for raw notes: "${rawNotes.substring(0, 30)}..."`);
     } catch (err: any) {
       console.error(err);
-      setAiError(err?.message || 'Failed to call Gemini API. Please make sure GEMINI_API_KEY is configured.');
+      setAiError(err?.message || 'Gagal menghubungi Server Cloud. Pastikan Kunci Server Verifikasi (GEMINI_API_KEY) telah dikonfigurasi.');
     } finally {
       setAiLoading(false);
     }
@@ -884,6 +917,7 @@ Raw Notes:
     setIsAuthenticated(true);
     setIsInstalled(true);
     localStorage.setItem('mda_company_name', setupData.companyName);
+    setCompanyName(setupData.companyName);
     setLoginError('');
 
     // Tambahkan log inisialisasi awal sistem
@@ -938,93 +972,109 @@ Raw Notes:
           <form onSubmit={handleSetupSubmit} className="space-y-6 pt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Seksi A: Profil Kantor */}
-              <div className="space-y-4 md:border-r md:border-slate-800/80 md:pr-6">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-teal-400 border-b border-slate-800 pb-1.5 flex items-center gap-2 font-sans">
-                  <Building2 className="w-4 h-4" /> {t.setupIdentity}
-                </h3>
-                
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupOfficeName}</label>
-                  <input
-                    type="text"
-                    required
-                    value={setupData.companyName}
-                    onChange={e => setSetupData({...setupData, companyName: e.target.value})}
-                    placeholder="e.g., Lanskap Cipta Mandiri"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupInfrastructure}</label>
-                  <div className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-teal-400 font-bold flex items-center gap-2">
-                    <Server className="w-4 h-4 text-teal-400 shrink-0" />
-                    <span>TrueNAS SCALE Server App Deployment</span>
-                    <span className="ml-auto text-[8px] bg-teal-500/10 text-teal-300 border border-teal-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold">Active Target</span>
-                  </div>
-                </div>
-
-                {setupData.infrastructureMode === 'TRUENAS' && (
-                  <div className="space-y-3 pt-1 animate-fade-in">
-                    <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-slate-400 font-mono">{t.setupIPAddress}</label>
-                      <input
-                        type="text"
-                        required
-                        value={setupData.sambaIp}
-                        onChange={e => setSetupData({...setupData, sambaIp: e.target.value})}
-                        placeholder="e.g., 192.168.1.150"
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-teal-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupPoolName}</label>
-                      <input
-                        type="text"
-                        required
-                        value={setupData.sambaPool}
-                        onChange={e => setSetupData({...setupData, sambaPool: e.target.value})}
-                        placeholder="e.g., ArchPoolNAS"
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Seksi C: Region & Time Adjustments */}
-                <div className="pt-2 border-t border-slate-800/60 space-y-3">
-                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5" /> {t.setupRegionTime}
-                  </h4>
+              <div className="space-y-4 md:border-r md:border-slate-800/80 md:pr-6 flex flex-col justify-between">
+                <div className="space-y-4 flex-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-teal-400 border-b border-slate-800 pb-1.5 flex items-center gap-2 font-sans">
+                    <Building2 className="w-4 h-4" /> {t.setupIdentity}
+                  </h3>
                   
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-slate-400">{t.setupRegion}</label>
-                      <select
-                        value={setupData.region}
-                        onChange={e => setSetupData({...setupData, region: e.target.value})}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
-                      >
-                        <option value="Indonesia">Indonesia</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Global">Global</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-slate-400">{t.setupTimezone}</label>
-                      <select
-                        value={setupData.timezone}
-                        onChange={e => setSetupData({...setupData, timezone: e.target.value})}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono"
-                      >
-                        <option value="WITA">WITA (UTC+8)</option>
-                        <option value="WIB">WIB (UTC+7)</option>
-                        <option value="WIT">WIT (UTC+9)</option>
-                        <option value="UTC">UTC (UTC+0)</option>
-                      </select>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupOfficeName}</label>
+                    <input
+                      type="text"
+                      required
+                      value={setupData.companyName}
+                      onChange={e => setSetupData({...setupData, companyName: e.target.value})}
+                      placeholder={t.setupOfficeNamePlaceholder}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupInfrastructure}</label>
+                    <div className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-teal-400 font-bold flex items-center gap-2">
+                      <Server className="w-4 h-4 text-teal-400 shrink-0" />
+                      <span>{t.truenasDeployment}</span>
+                      <span className="ml-auto text-[8px] bg-teal-500/10 text-teal-300 border border-teal-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold">{t.setupActiveTarget}</span>
                     </div>
                   </div>
+
+                  {setupData.infrastructureMode === 'TRUENAS' && (
+                    <div className="space-y-3 pt-1 animate-fade-in">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-slate-400 font-mono">{t.setupIPAddress}</label>
+                        <input
+                          type="text"
+                          required
+                          value={setupData.sambaIp}
+                          onChange={e => setSetupData({...setupData, sambaIp: e.target.value})}
+                          placeholder={t.setupIPAddressPlaceholder}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-teal-500"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-slate-400">{t.setupPoolName}</label>
+                        <input
+                          type="text"
+                          required
+                          value={setupData.sambaPool}
+                          onChange={e => setSetupData({...setupData, sambaPool: e.target.value})}
+                          placeholder={t.setupPoolNamePlaceholder}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono font-mono"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Seksi C: Region & Time Adjustments */}
+                  <div className="pt-2 border-t border-slate-800/60 space-y-3">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5" /> {t.setupRegionTime}
+                    </h4>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[9px] uppercase font-bold text-slate-400">{t.setupRegion}</label>
+                        <select
+                          value={setupData.region}
+                          onChange={e => setSetupData({...setupData, region: e.target.value})}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
+                        >
+                          <option value="Indonesia">Indonesia</option>
+                          <option value="Singapore">Singapore</option>
+                          <option value="Australia">Australia</option>
+                          <option value="Global">Global</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] uppercase font-bold text-slate-400">{t.setupTimezone}</label>
+                        <select
+                          value={setupData.timezone}
+                          onChange={e => setSetupData({...setupData, timezone: e.target.value})}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono"
+                        >
+                          <option value="WITA">WITA (UTC+8)</option>
+                          <option value="WIB">WIB (UTC+7)</option>
+                          <option value="WIT">WIT (UTC+9)</option>
+                          <option value="UTC">UTC (UTC+0)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subtle Watermark Logo below Region & Time aligned to bottom */}
+                <div className="pt-4 mt-auto flex flex-col items-center justify-center text-center space-y-1.5 animate-fade-in border-t border-slate-800/30">
+                  <img 
+                    src={torkyLogoWatermark} 
+                    alt="Torky Komputer Watermark" 
+                    className="h-[30px] w-auto opacity-40 hover:opacity-95 transition-all duration-300 object-contain select-none"
+                    style={{ mixBlendMode: 'screen', filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)' }}
+                    referrerPolicy="no-referrer"
+                  />
+                  <span className="text-[7.5px] tracking-widest text-slate-500 uppercase font-mono font-bold scale-95 origin-center">
+                    {t.setupWatermarkLabel}
+                  </span>
                 </div>
               </div>
 
@@ -1042,7 +1092,7 @@ Raw Notes:
                       required
                       value={setupData.superAdminName}
                       onChange={e => setSetupData({...setupData, superAdminName: e.target.value})}
-                      placeholder="e.g., Yan Torky"
+                      placeholder={t.setupAdminNamePlaceholder}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
                     />
                   </div>
@@ -1054,7 +1104,7 @@ Raw Notes:
                       required
                       value={setupData.superAdminEmail}
                       onChange={e => setSetupData({...setupData, superAdminEmail: e.target.value})}
-                      placeholder="e.g., root_admin@firm.com"
+                      placeholder={t.setupAdminEmailPlaceholder}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
                     />
                   </div>
@@ -1067,7 +1117,7 @@ Raw Notes:
                         required
                         value={setupData.superAdminPassword}
                         onChange={e => setSetupData({...setupData, superAdminPassword: e.target.value})}
-                        placeholder="Masukkan kata sandi baru..."
+                        placeholder={t.setupAdminPasswordPlaceholder}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-3.5 pr-10 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono"
                       />
                       <button
@@ -1088,7 +1138,7 @@ Raw Notes:
                         required
                         value={setupData.confirmPassword}
                         onChange={e => setSetupData({...setupData, confirmPassword: e.target.value})}
-                        placeholder={language === 'ID' ? 'Konfirmasi sandi...' : 'Confirm password...'}
+                        placeholder={t.setupConfirmPasswordPlaceholder}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-3.5 pr-10 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-mono"
                       />
                       <button
@@ -1125,7 +1175,7 @@ Raw Notes:
                         type="button"
                         onClick={() => {
                           const mId = generateMachineId(setupData.companyName, setupData.sambaIp, setupData.sambaPool);
-                          navigator.clipboard.writeText(mId);
+                          copyToClipboard(mId);
                           setCopyFeedback(true);
                           setTimeout(() => setCopyFeedback(false), 2000);
                         }}
@@ -1266,7 +1316,11 @@ Raw Notes:
             <div className="inline-flex bg-gradient-to-tr from-teal-500 to-cyan-400 p-3 rounded-2xl text-slate-950 shadow-lg shadow-teal-500/10 mb-2">
               <Building2 className="w-8 h-8 stroke-[2]" />
             </div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Management Data App</h2>
+            <h2 className="text-xl font-extrabold text-white tracking-tight flex items-center justify-center gap-2">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-300">MDA</span>
+              <span className="text-slate-600 font-normal">|</span>
+              <span>{companyName || 'Management Data App'}</span>
+            </h2>
             <p className="text-xs text-slate-400 max-w-xs mx-auto">{t.loginSubtitle}</p>
           </div>
 
@@ -1392,13 +1446,17 @@ Raw Notes:
             <Building2 className="w-6 h-6 stroke-[2.5]" id="app-logo" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
-              Management Data App
+            <h1 className="text-xl font-extrabold tracking-tight text-white flex flex-wrap items-center gap-x-2.5 gap-y-1">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-cyan-300">
+                MDA
+              </span>
+              <span className="text-slate-600 font-normal">|</span>
+              <span className="text-slate-100 font-semibold text-lg">{companyName || 'Management Data App'}</span>
               <span className="text-[10px] font-bold bg-teal-500/15 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/30">
                 v1.0 Licensed
               </span>
               <span className="text-[9px] font-mono bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" /> SECURE MODE (Torky Komputer)
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-500" /> SECURE MODE (Torky Komputer)
               </span>
             </h1>
             <p className="text-xs text-slate-400 flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -2813,19 +2871,19 @@ Raw Notes:
                 <div>
                   <h2 className="text-md font-bold text-white flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-teal-400 animate-pulse" />
-                    AI Recruitment Sandbox
+                    Generator Rekrutmen & Evaluasi
                   </h2>
                   <p className="text-[10px] text-slate-400 mt-1">
-                    Input raw requirements of any desired architectural or engineering role. The AI drafts a LinkedIn-optimized Job Description and a 10-Question Behavioral Interview Guide.
+                    Masukkan parameter kebutuhan peran arsitektural atau teknik sipil. Sistem Cloud akan memproses dan menyusun Draf Deskripsi Pekerjaan teroptimasi serta 10 Pertanyaan Evaluasi Wawancara terstruktur.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-bold text-slate-400">Raw Role notes / requirements</label>
+                  <label className="text-[10px] uppercase font-bold text-slate-400">Catatan Mentah / Parameter Peran</label>
                   <textarea
                     value={rawNotes}
                     onChange={(e) => setRawNotes(e.target.value)}
-                    placeholder="Describe desired skills, years of experience, Revit/ISO expectations, and cultural traits..."
+                    placeholder="Tuliskan keahlian yang dicari, estimasi pengalaman kerja, ekspektasi standard Revit/ISO, dan karakter kerja..."
                     rows={8}
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:ring-1 focus:ring-teal-500 font-sans"
                   />
@@ -2846,19 +2904,19 @@ Raw Notes:
                   {aiLoading ? (
                     <>
                       <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                      Consulting Gemini AI...
+                      Menghubungkan Server Cloud...
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 text-slate-950" />
-                      Generate Recruitment Package
+                      Hasilkan Paket Rekrutmen
                     </>
                   )}
                 </button>
 
                 <div className="border-t border-slate-900 pt-4 text-[10px] text-slate-500 flex items-center gap-2">
                   <Lock className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Secure enterprise routing via Gemini 2.5 Server-side API.</span>
+                  <span>Koneksi aman terenkripsi melalui API Server Torky Cloud.</span>
                 </div>
               </div>
 
@@ -2867,9 +2925,9 @@ Raw Notes:
                 {aiLoading ? (
                   <div className="bg-slate-950 border border-slate-800 rounded-2xl p-16 text-center space-y-4 shadow-xl">
                     <div className="w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <h3 className="text-white font-bold text-sm">Consulting AI Recruiting Specialist</h3>
+                    <h3 className="text-white font-bold text-sm">Menghubungkan Server Cloud Rekrutmen...</h3>
                     <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                      Analyzing hard skills, soft skills, and structural AEC requirements to draft professional resources...
+                      Menganalisis kompetensi teknis, kecakapan non-teknis, serta kepatuhan standar industri AEC untuk menyusun draf profesional...
                     </p>
                   </div>
                 ) : jobDescription ? (
@@ -2894,7 +2952,7 @@ Raw Notes:
                       <div className="pt-3 border-t border-slate-900">
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(jobDescription);
+                            copyToClipboard(jobDescription);
                             alert('Job Description copied to clipboard successfully!');
                           }}
                           className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-teal-500/30 text-slate-300 text-[10px] font-bold py-2 rounded-xl transition-all cursor-pointer"
@@ -2923,7 +2981,7 @@ Raw Notes:
                       <div className="pt-3 border-t border-slate-900">
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(interviewGuide);
+                            copyToClipboard(interviewGuide);
                             alert('Interview Guide copied to clipboard successfully!');
                           }}
                           className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/30 text-slate-300 text-[10px] font-bold py-2 rounded-xl transition-all cursor-pointer"
@@ -3341,6 +3399,7 @@ Raw Notes:
                   <li><a href="#ch3" className="hover:text-teal-400 transition-colors">3. Protokol Keamanan Siber: Ransomware Shield, Snapshots & File Integrity Audit</a></li>
                   <li><a href="#ch4" className="hover:text-teal-400 transition-colors">4. Pedoman Kode Penamaan ISO 19650-2 Untuk File Proyek</a></li>
                   <li><a href="#ch5" className="hover:text-teal-400 transition-colors">5. Deployment Server: Instalasi sebagai Docker Container di TrueNAS SCALE</a></li>
+                  <li><a href="#ch6" className="hover:text-teal-400 transition-colors">6. Alur Lisensi Offline & Kurikulum Pelatihan (Training) Staf & Klien Mandiri</a></li>
                 </ul>
               </div>
 
@@ -3521,8 +3580,8 @@ Raw Notes:
                         <li><strong>Application Name:</strong> <code className="text-teal-400 font-mono">data-architect-mda</code></li>
                         <li><strong>Image Repository:</strong> <code className="text-teal-400 font-mono">torkykomputer/mda-vault</code></li>
                         <li><strong>Image Tag:</strong> <code className="text-teal-400 font-mono">latest</code></li>
-                        <li><strong>Port Forwarding (Container Port &gt; Host Port):</strong> Hubungkan port kontainer <code className="text-white font-mono">3000</code> ke port host TrueNAS Anda (Masukkan <code className="text-teal-400 font-mono">80</code> agar aplikasi dapat diakses langsung menggunakan IP Address kantor tanpa tambahan port kustom).</li>
-                        <li><strong>Environment Variables:</strong> Tambahkan variabel lingkungan rahasia <code className="text-amber-400 font-mono">GEMINI_API_KEY</code> yang berisi kunci API Gemini Anda dari konsol Google Developer untuk mengaktifkan fitur rekrutmen berbasis AI.</li>
+                        <li><strong>Port Forwarding (Container Port &gt; Host Port):</strong> Hubungkan port kontainer <code className="text-white font-mono">3000</code> ke port host TrueNAS Anda (Masukkan <code className="text-teal-400 font-mono">7777</code> agar aplikasi dapat diakses melalui port khusus 7777 secara terdedikasi).</li>
+                        <li><strong>Environment Variables:</strong> Tambahkan variabel lingkungan rahasia <code className="text-amber-400 font-mono">GEMINI_API_KEY</code> yang berisi Kunci Server Verifikasi Cloud Anda untuk mengaktifkan fitur pengolah modul deskripsi pekerjaan dan rekrutmen.</li>
                       </ul>
                     </li>
                     <li>
@@ -3536,13 +3595,80 @@ Raw Notes:
                   </p>
                   <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 font-mono text-[11px] text-slate-300">
                     <p className="text-slate-500">:: Alamat Akses Aplikasi di Browser Komputer Klien (Ketik di Google Chrome / Edge):</p>
-                    <p className="text-teal-400 font-bold">http://[IP_TrueNAS_Server]</p>
+                    <p className="text-teal-400 font-bold">http://[IP_TrueNAS_Server]:7777</p>
                     <p className="text-slate-500 mt-1">:: Contoh Nyata:</p>
-                    <p className="text-white font-bold">http://192.168.1.254</p>
+                    <p className="text-white font-bold">http://192.168.1.254:7777</p>
                   </div>
                   <p>
                     Metode arsitektur tersentralisasi ini menjamin aplikasi web Anda aman dari pencurian, terintegrasi penuh ke tangguhnya ZFS storage, serta memudahkan monitoring log compliance ISO 19650 secara real-time.
                   </p>
+                </div>
+              </div>
+
+              {/* Chapter 6 */}
+              <div id="ch6" className="space-y-3 scroll-mt-20">
+                <h2 className="text-base font-extrabold text-white border-b border-slate-800 pb-2 flex items-center gap-2 print:text-black">
+                  <span className="bg-teal-500/15 text-teal-400 px-2 py-0.5 rounded text-xs print:bg-slate-200 print:text-black font-sans">Bab 6</span>
+                  Alur Lisensi Offline & Kurikulum Pelatihan (Training) Staf & Klien Mandiri
+                </h2>
+                <div className="text-xs text-slate-300 space-y-3 leading-relaxed print:text-black">
+                  <p>
+                    Sebagai pemegang sah hak distribusi software ini, Anda wajib menguasai perbedaan arsitektur antara <strong>Komputer Lokal Pengembang (Milik Anda)</strong> dan <strong>Server Jaringan Kantor (Milik Klien)</strong> agar proses deployment dan training berjalan sempurna.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/30 border border-slate-800 p-4 rounded-xl">
+                    <div>
+                      <h4 className="font-bold text-teal-400 text-[11px] mb-1">💻 KOMPUTER LOKAL ANDA (OWNER)</h4>
+                      <p className="text-[10px] text-slate-400">
+                        Lokasi ekstraksi file ZIP asli (contoh: <code className="text-white font-mono text-[9px]">G:\Management Data App\management_data_app</code>). Direktori ini berisi file rahasia <code className="text-amber-400 font-mono text-[9px]">keygen.js</code> dan skrip instan <code className="text-amber-400 font-mono text-[9px]">generate.bat</code>. Kedua berkas ini aman karena <strong>tidak akan pernah terupload ke GitHub</strong> karena diabaikan oleh Git. Di komputer inilah Anda membuat Kunci Lisensi khusus untuk dikirimkan ke klien.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-cyan-400 text-[11px] mb-1">🖥️ SERVER TRUENAS KLIEN (TARGET)</h4>
+                      <p className="text-[10px] text-slate-400">
+                        Mesin server TrueNAS SCALE di kantor klien yang menjalankan kontainer Docker aplikasi ini. Klien tidak pernah memiliki kode sumber, file keygen, atau skrip batch pembuat kunci. Aplikasi klien saat pertama kali diinstal akan memindai sidik jari perangkat keras (Hardware Fingerprint) mereka dan menampilkan halaman registrasi terkunci yang memohon Kode Aktivasi.
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="font-bold text-slate-200">Panduan Langkah Demi Langkah Aktivasi Lisensi Offline (Untuk Anda):</p>
+                  <ol className="list-decimal pl-5 space-y-1 text-slate-400">
+                    <li>Klien menginstal aplikasi di TrueNAS SCALE mereka, membuka halaman web <code className="text-slate-200 font-mono">http://[IP_TrueNAS_Klien]:7777</code>, lalu menyalin <strong>ID Mesin Klien</strong> unik yang otomatis tertera di layar.</li>
+                    <li>Klien mengirimkan ID Mesin tersebut kepada Anda melalui pesan/email terenkripsi.</li>
+                    <li>Di komputer lokal Anda (<code className="text-slate-200 font-mono">G:\...</code>), klik ganda file <strong>`generate.bat`</strong>.</li>
+                    <li>Masukkan ID Mesin Klien pada konsol generator interaktif yang muncul, lalu tekan Enter.</li>
+                    <li>Salin <strong>Kunci Lisensi</strong> rahasia yang dihasilkan di layar, lalu kirimkan ke klien.</li>
+                    <li>Klien memasukkan Kunci Lisensi di halaman aktivasi aplikasi, dan sistem teraktivasi secara permanen secara offline.</li>
+                  </ol>
+
+                  <p className="font-bold text-slate-200 mt-2">Silabus Training Klien yang Efektif (Pedoman Pengajaran Anda):</p>
+                  
+                  <div className="space-y-2">
+                    <p className="font-bold text-slate-300 font-sans">Sesi 1: Tim Drafter & Desainer (Disiplin Data Samba Share)</p>
+                    <ul className="list-disc pl-5 text-[11px] text-slate-400 space-y-1">
+                      <li><strong>Pemetaan Jaringan Windows (Mapping Drive):</strong> Ajari staf cara memetakan dataset dengan klik kanan di Windows Explorer "Map network drive" ke alamat IP TrueNAS.
+                        <div className="bg-slate-950 p-2 rounded text-[10px] text-teal-400 font-mono mt-1">
+                          net use P: \\192.168.1.254\projects /persistent:yes<br/>
+                          net use L: \\192.168.1.254\library /persistent:yes
+                        </div>
+                      </li>
+                      <li><strong>Disiplin Penyimpanan Cad & SketchUp:</strong> Staf dilarang keras menggambar di desktop atau harddisk lokal komputer klien. Semua pekerjaan harus langsung dilakukan di Drive P: agar terproteksi oleh Snapshot ZFS TrueNAS setiap jam.</li>
+                      <li><strong>Aturan Penamaan Berkas Gambar ISO 19650-2:</strong> Contohkan cara menamai file gambar CAD secara ketat. Jelaskan bahwa status kesesuaian awal adalah <code className="text-slate-200">S0</code> (WIP/Drafting). Jika gambar siap direview oleh Project Manager, nama file harus diubah kodenya menjadi <code className="text-slate-200">S2</code> (Shared for Info).</li>
+                    </ul>
+
+                    <p className="font-bold text-slate-300 mt-2 font-sans">Sesi 2: Pimpinan Kantor & Admin Finansial (Sistem Verifikasi & Log Kepatuhan)</p>
+                    <ul className="list-disc pl-5 text-[11px] text-slate-400 space-y-1">
+                      <li><strong>Hak Istimewa Akses Admin (RBAC):</strong> Ajarkan admin cara memetakan Drive A: (<code className="text-slate-200 font-mono">\\IP_TrueNAS\admin</code>) khusus untuk file keuangan, anggaran, dan hukum. Yakinkan mereka bahwa staf desainer diblokir total oleh TrueNAS dari akses ke drive ini.</li>
+                      <li><strong>Penggunaan Aplikasi Web MDA:</strong> Latih pimpinan untuk login ke aplikasi web MDA di browser (<code className="text-slate-200 font-mono">http://IP_TrueNAS:7777</code>) menggunakan akun Admin mereka untuk mengawasi kepatuhan format nama file kerja arsitek (ISO 19650 Compliance Module), melihat volume log gambar harian, serta mengecek Log Audit (Audit Trail) aktivitas siber guna mendeteksi ancaman pencurian data internal secara real-time.</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-3 bg-teal-950/20 border border-teal-900/50 rounded-xl mt-3">
+                    <p className="text-[10px] text-teal-400 font-bold">Catatan Keamanan Penting untuk Anda:</p>
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      Jika harddisk fisik tempat Anda mengekstrak ZIP di komputer lokal Anda rusak, Anda tidak perlu khawatir kehilangan data. Seluruh source code proyek telah aman di-backup di repositori GitHub privat Anda menggunakan utilitas <code className="text-slate-300 font-mono">auto_push.bat</code>. Anda tinggal mengunduh ulang ZIP proyek dari GitHub Anda, mengekstraknya di drive mana saja, dan generator lisensi offline Anda lewat <code className="text-slate-300 font-mono">generate.bat</code> akan langsung berfungsi normal tanpa ada perubahan konfigurasi apa pun!
+                    </p>
+                  </div>
                 </div>
               </div>
 

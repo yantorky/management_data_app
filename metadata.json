@@ -1,5 +1,5 @@
 {
-  "name": "management_data_app",
+  "name": "Management Data App (MDA)",
   "description": "Enterprise-grade data management platform for architecture firms, featuring ISO 19650 folder compliance, file versioning, team management, and audit logs.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

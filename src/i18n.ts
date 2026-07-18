@@ -40,24 +40,42 @@ export interface TranslationSet {
   auditTrail: string;
   userManual: string;
 
+  navDashboard: string;
+  navClients: string;
+  navProjects: string;
+  navTrueNAS: string;
+  navSandbox: string;
+  navAuditTrail: string;
+  navBookManual: string;
+
   // Setup Wizard
   setupTitle: string;
   setupSubtitle: string;
   setupIdentity: string;
   setupOfficeName: string;
+  setupOfficeNamePlaceholder: string;
   setupInfrastructure: string;
   setupTrueNASOption: string;
   setupStandaloneOption: string;
   setupIPAddress: string;
+  setupIPAddressPlaceholder: string;
   setupPoolName: string;
+  setupPoolNamePlaceholder: string;
   setupAdminCredentials: string;
   setupAdminName: string;
+  setupAdminNamePlaceholder: string;
   setupAdminEmail: string;
+  setupAdminEmailPlaceholder: string;
   setupAdminPassword: string;
+  setupAdminPasswordPlaceholder: string;
   setupConfirmPassword: string;
+  setupConfirmPasswordPlaceholder: string;
+  setupActiveTarget: string;
+  truenasDeployment: string;
   setupRegionTime: string;
   setupRegion: string;
   setupTimezone: string;
+  setupWatermarkLabel: string;
   setupLicenseKey: string;
   setupLicensePlaceholder: string;
   setupLicenseHint: string;
@@ -162,29 +180,47 @@ export const translations: Record<Language, TranslationSet> = {
     clients: "Clients",
     projectHub: "Project Hub",
     truenasSamba: "TrueNAS Samba",
-    aiSandbox: "AI Sandbox",
+    aiSandbox: "Recruitment Suite",
     auditTrail: "Audit Trail",
     userManual: "User Manual",
+
+    navDashboard: "Dashboard",
+    navClients: "Clients",
+    navProjects: "Project Hub",
+    navTrueNAS: "TrueNAS Samba",
+    navSandbox: "Recruitment Suite",
+    navAuditTrail: "Audit Trail",
+    navBookManual: "User Manual",
 
     setupTitle: "System Installation & Database Initialization",
     setupSubtitle: "Configure your architecture firm profile, register the primary Super Admin account, and set network storage configurations.",
     setupIdentity: "1. Firm Identity Parameters",
     setupOfficeName: "Architecture Firm / Office Name",
+    setupOfficeNamePlaceholder: "e.g., Acme Consulting Architects",
     setupInfrastructure: "Storage Infrastructure Mode",
     setupTrueNASOption: "TrueNAS Server & Samba Share Mapping (Enterprise)",
     setupStandaloneOption: "Standalone Workstation / Single PC Mode",
     setupIPAddress: "TrueNAS Server IP Address",
+    setupIPAddressPlaceholder: "e.g., 192.168.1.100",
     setupPoolName: "Samba Pool Name (ZFS Pool)",
+    setupPoolNamePlaceholder: "e.g., production_pool",
     setupAdminCredentials: "2. Primary Super Admin Credentials",
     setupAdminName: "Administrator Full Name",
+    setupAdminNamePlaceholder: "e.g., John Doe",
     setupAdminEmail: "Primary Work Email",
+    setupAdminEmailPlaceholder: "e.g., admin@firm.com",
     setupAdminPassword: "Super Admin Password",
+    setupAdminPasswordPlaceholder: "Enter new password...",
     setupConfirmPassword: "Confirm Password",
+    setupConfirmPasswordPlaceholder: "Confirm password...",
+    setupActiveTarget: "Active Target",
+    truenasDeployment: "TrueNAS SCALE Server App Deployment",
     setupRegionTime: "3. Regional & Time Settings",
     setupRegion: "Operating Region",
     setupTimezone: "System Timezone",
+    setupWatermarkLabel: "Authorized System Integrator: Torky Komputer",
     setupLicenseKey: "4. Torky Komputer License Security Key",
-    setupLicensePlaceholder: "Enter License Key from Torky Komputer...",
+    setupLicensePlaceholder: "License Key (Torky Komputer)...",
     setupLicenseHint: "Application is cryptographically locked based on client TrueNAS Machine ID to prevent piracy and software cloning.",
     machineIdLabel: "TRUENAS MACHINE ID (CLIENT)",
     zfsFingerprint: "ZFS FINGERPRINT",
@@ -281,29 +317,47 @@ export const translations: Record<Language, TranslationSet> = {
     clients: "Klien",
     projectHub: "Proyek Hub",
     truenasSamba: "TrueNAS Samba",
-    aiSandbox: "AI Sandbox",
+    aiSandbox: "Generator Rekrutmen",
     auditTrail: "Audit Trail",
     userManual: "Buku Manual",
+
+    navDashboard: "Dashboard",
+    navClients: "Klien",
+    navProjects: "Proyek Hub",
+    navTrueNAS: "TrueNAS Samba",
+    navSandbox: "Generator Rekrutmen",
+    navAuditTrail: "Audit Trail",
+    navBookManual: "Buku Manual",
 
     setupTitle: "Sistem Instalasi & Inisialisasi Database",
     setupSubtitle: "Langkah wajib untuk mengonfigurasi profil kantor konsultan arsitektur Anda, mendaftarkan akun Super Admin utama, serta menetapkan model infrastruktur jaringan.",
     setupIdentity: "1. Parameter Identitas Kantor",
     setupOfficeName: "Nama Kantor / Firma Arsitektur",
+    setupOfficeNamePlaceholder: "Contoh: PT Arsitek Utama",
     setupInfrastructure: "Mode Infrastruktur Storage",
     setupTrueNASOption: "Server TrueNAS & Samba Share Mapping (Enterprise)",
     setupStandaloneOption: "Komputer Tunggal / Workstation Mandiri Lokal",
     setupIPAddress: "TrueNAS Server IP Address",
+    setupIPAddressPlaceholder: "Contoh: 192.168.1.100",
     setupPoolName: "Samba Pool Name (ZFS Pool)",
+    setupPoolNamePlaceholder: "Contoh: nama_pool",
     setupAdminCredentials: "2. Kredensial Super Admin Utama",
     setupAdminName: "Nama Lengkap Administrator",
+    setupAdminNamePlaceholder: "Contoh: Budi Santoso",
     setupAdminEmail: "Email Kerja Utama",
+    setupAdminEmailPlaceholder: "Contoh: admin@kantor.com",
     setupAdminPassword: "Kata Sandi Super Admin",
+    setupAdminPasswordPlaceholder: "Masukkan kata sandi baru...",
     setupConfirmPassword: "Konfirmasi Sandi",
+    setupConfirmPasswordPlaceholder: "Konfirmasi sandi...",
+    setupActiveTarget: "Target Aktif",
+    truenasDeployment: "Penyebaran Aplikasi Server TrueNAS SCALE",
     setupRegionTime: "3. Penyesuaian Regional & Waktu",
     setupRegion: "Region Operasional",
     setupTimezone: "Zona Waktu Sistem",
+    setupWatermarkLabel: "System Integrator Resmi: Torky Komputer",
     setupLicenseKey: "4. Kunci Keamanan Lisensi Torky Komputer",
-    setupLicensePlaceholder: "Masukkan Kunci Lisensi dari Torky Komputer...",
+    setupLicensePlaceholder: "Kunci Lisensi Torky Komputer...",
     setupLicenseHint: "Aplikasi dikunci penuh secara kriptografis berdasarkan ID Mesin TrueNAS kantor, mencegah pembajakan dan penyalinan software liar.",
     machineIdLabel: "ID MESIN TRUENAS (KLIEN)",
     zfsFingerprint: "SIDIK JARI ZFS",

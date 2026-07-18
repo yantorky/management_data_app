@@ -1,173 +1,127 @@
-# 🌟 Management Data App (Enterprise Vault Edition)
-
 <p align="center">
-  <img src="src/assets/images/mda_vault_banner_1783504906613.jpg" alt="Management Data App - Enterprise Vault Edition Banner" width="100%">
+  <img src="./src/assets/images/mda_vault_banner_1783504906613.jpg" alt="MDA Enterprise Vault Banner" width="100%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
 </p>
 
-Sistem Keamanan, Integrasi Server Storage, dan Manajemen Data Common Data Environment (CDE) Berstandar Internasional **ISO 19650** untuk Kantor Konsultan Arsitektur.
-
-Aplikasi ini dirancang sebagai pelengkap bernilai tambah tinggi (*premium add-on*) untuk dipasang berdampingan dengan sistem operasi **TrueNAS SCALE** guna mengamankan, mengelola, dan mengotomatisasi seluruh struktur berkas arsitektur, gambar kerja AutoCAD, dan model 3D SketchUp/Revit.
-
----
-
-## 🛡️ Modul Pengamanan Source Code & Anti-Duplikasi (Torky Security Engine)
-*Untuk menjamin bisnis Anda sebagai pengelola sistem server di kantor arsitek klien, software ini dipersenjatai perlindungan hak milik tingkat militer:*
-
-* **Hardware-Locked License Key**: Sistem wajib diaktivasi dengan Kunci Lisensi Kriptografis dari Torky Komputer (`TORKY-SECURE-2026-MDA`) yang terkunci pada Sidik Jari Perangkat Keras (Hardware Fingerprint) server target.
-* **Source Code Anti-Duplication Hash**: Setiap pod container terisolasi secara kriptografis. Modul deteksi anti-tamper akan memutus akses database secara instan apabila mendeteksi adanya modifikasi liar atau upaya penyalinan mentah source code aplikasi.
-* **Server-Side API Encryption & Hiding**: Seluruh logic utama, termasuk integrasi kecerdasan buatan Gemini AI, diproteksi di sisi server (Express API Proxy). API key tidak akan pernah bocor ke browser komputer klien desainer.
-
----
-
-## 🌟 Fitur Utama & Keunggulan Enterprise
-
-### 📁 1. Common Data Environment (CDE) ISO 19650
+# <p align="center">Management Data App (MDA)</p>
+### <p align="center">Enterprise Common Data Environment (CDE) Portal & Secure Storage Management</p>
 
 <p align="center">
-  <img src="src/assets/images/mda_cde_workflow_1783504956490.jpg" alt="ISO 19650 CDE Workflow Diagram" width="90%">
+  <a href="#iso-19650-cde"><img src="https://img.shields.io/badge/Standard-ISO_19650-blue?style=flat-for-the-badge&logo=prospectus" alt="ISO 19650 Standard"></a>
+  <a href="#truenas-samba"><img src="https://img.shields.io/badge/Storage-TrueNAS_ZFS-orange?style=flat-for-the-badge&logo=truenas" alt="TrueNAS ZFS"></a>
+  <a href="#ransomware-shield"><img src="https://img.shields.io/badge/Security-Ransomware_Shield-red?style=flat-for-the-badge&logo=shield" alt="Ransomware Shield"></a>
+  <a href="#security-copyright"><img src="https://img.shields.io/badge/License-Proprietary-gold?style=flat-for-the-badge" alt="License Proprietary"></a>
 </p>
 
-* **Automated Folder Generator**: Menginisialisasi 4 direktori kepatuhan utama (**WIP, SHARED, PUBLISHED, ARCHIVED**) secara otomatis pada ZFS Dataset proyek.
-* **ISO 19650 Filename Builder**: Asisten pembuatan kode nama berkas otomatis yang menjamin keunikan dan kepatuhan standar penamaan internasional (Proyek-Originator-Volume-Level-Tipe-Role-Nomor-Kesesuaian-Revisi).
-* **AutoCAD Xref Pathing Manager**: Menyinkronkan dan memandu pembacaan referensi silang AutoCAD (Xref) secara relatif (`Relative Path`) maupun tersentralisasi di server.
+---
 
-### 💾 2. Integrasi TrueNAS SCALE & Samba Share (RBAC)
-* **Pemetaan 3 Datasheet**: Mengontrol dan memonitor kondisi 3 Samba Share utama kantor: `/admin`, `/projects`, dan `/library`.
-* **Sistem Otorisasi Ketat (Role-Based Access Control)**:
-  * **Komputer Admin Kantor (Owner/PM)**: Akses **BACA & TULIS (EDIT)** ke ketiga datasheet (`admin`, `projects`, `library`) untuk mengontrol kontrak finansial, SDM, dan master template.
-  * **Komputer Desainer (Design Team)**: Akses **BACA & TULIS (EDIT)** dibatasi hanya pada `/projects` dan `/library`. Akses ke folder `/admin` **DIBLOKIR TOTAL** secara sistemik.
+Sistem Portal **Common Data Environment (CDE)** Terpadu Berstandar **ISO 19650** & Manajemen Data Terdistribusi yang dirancang khusus untuk Kantor Konsultan Konstruksi, Arsitektur, dan Engineering skala Menengah-Atas (*Enterprise-Grade*). 
 
-### 🚨 3. Proteksi Ransomware & Integritas File
-* **ZFS Snapshot Scheduler**: Panduan otomatisasi pembuatan cadangan data berkala (*snapshot*) di TrueNAS SCALE yang tahan terhadap infeksi malware/ransomware.
-* **SHA-256 Checksum Validator**: Memindai integritas berkas digital proyek untuk memastikan gambar kerja tidak diubah secara ilegal tanpa persetujuan tim leader.
+Aplikasi ini mengintegrasikan alur kerja data proyek secara dinamis dengan infrastruktur penyimpanan berbasis **TrueNAS (Samba Share)** untuk mengamankan, mengontrol, dan mengotomatisasi seluruh siklus dokumen proyek, model 3D (SketchUp/Revit/BIM), serta gambar kerja CAD secara real-time.
 
 ---
 
-## 🛠️ Panduan Lengkap Instalasi & Deployment pada TrueNAS SCALE
-*Aplikasi ini dirancang khusus untuk berjalan di dalam lingkungan kontainer Docker di server **TrueNAS SCALE**.*
+## 🏗️ Fitur Utama & Keunggulan Sistem
 
-### Prasyarat System
-* **TrueNAS SCALE** (Versi Bluefin atau Cobia).
-* **Dataset ZFS** yang telah terkonfigurasi untuk Samba (SMB) Share: `/admin`, `/projects`, `/library`.
-* **Kunci API Gemini** (dari Google AI Studio) untuk mengaktifkan modul AI Recruitment Sandbox.
+<a id="iso-19650-cde"></a>
+### 📁 Common Data Environment (CDE) ISO 19650-2
+Sistem mengadopsi standar internasional ISO 19650-2 untuk penataan siklus hidup dokumen konstruksi guna meminimalkan kesalahan koordinasi:
+
+<p align="center">
+  <img src="./src/assets/images/mda_cde_workflow_1783504956490.jpg" alt="MDA CDE Workflow Diagram" width="85%" style="border-radius: 6px; border: 1px solid #334155;">
+</p>
+
+* **Automated CDE Folder Generator**: Menginisialisasi otomatis 4 direktori kepatuhan utama (**WIP, SHARED, PUBLISHED, ARCHIVED**) langsung di atas dataset penyimpanan yang ditentukan.
+* **ISO 19650 Filename Compliance**: Mesin validasi penamaan yang menjamin keunikan berkas berdasarkan kode proyek, originator, volume, level, tipe, role, nomor, kesesuaian, dan revisi.
+* **CAD Xref Relative Path Sync**: Portal visual untuk monitoring kepatuhan referensi silang (Xref) file CAD secara relatif, memastikan keandalan dokumen saat dipindahkan antar-server.
+
+<a id="truenas-samba"></a>
+### 💾 Integrasi TrueNAS & Samba Share (Role-Based Access Control)
+Sistem memetakan dan mengawasi kesehatan akses 3 Samba Share utama:
+* **Dataset `/admin`**: Berkas finansial, anggaran, legalitas, dan operasional kantor.
+* **Dataset `/projects`**: File desain aktif, gambar kerja, dokumen proyek, dan koordinasi BIM.
+* **Dataset `/library`**: Standar material, detail gambar, spesifikasi teknis, dan aset digital.
+* **RBAC Enforcement**: Validasi logika sistem yang memisahkan hak akses antara Komputer Admin (Full Access: `/admin`, `/projects`, `/library`) dan Komputer Tim Desainer (Dibatasi: `/projects` dan `/library` saja, folder `/admin` ditolak total).
+
+<a id="ransomware-shield"></a>
+### 🛡️ Proteksi Integritas File & Ransomware Shield
+* **ZFS Snapshot Automation Guides**: Integrasi petunjuk berkala pembuatan cadangan non-destruktif (*snapshot*) pada ZFS Storage Pool guna mengamankan data dari ancaman infeksi malware/ransomware.
+* **SHA-256 Checksum Validator**: Pengujian tanda tangan digital berkas proyek untuk mendeteksi perubahan ilegal di luar otorisasi manajer proyek.
 
 ---
 
-### Bagian 1: Konfigurasi Dataset & User SMB di TrueNAS SCALE
+<a id="security-copyright"></a>
+## 🔒 Proteksi Keamanan Sistem & Hak Cipta
 
-Sebelum menyebarkan aplikasi, Anda wajib mengonfigurasi struktur akun pengguna dan hak akses dataset pada Web UI TrueNAS SCALE:
+Untuk menjaga kerahasiaan dan hak cipta produk dalam proses distribusi, sistem dilengkapi dengan:
+1. **Server-Side Integration Proxy**: Seluruh API utama (termasuk modul pemrosesan data berbasis kecerdasan buatan/AI) dilindungi sepenuhnya di sisi server. Token otentikasi dan API key tidak pernah terekspos ke sisi klien.
+2. **Kriptografi Aktivasi Offline**: Sistem memerlukan verifikasi lisensi kriptografis berbasis integrasi sidik jari perangkat keras (*hardware-locked fingerprint alignment*). Seluruh proses modul lisensi dan generator kode disembunyikan sepenuhnya dari distribusi klien publik demi mengeliminasi risiko dekompilasi, bypass lisensi, dan pembongkaran kode (*reverse engineering*).
 
+---
+
+## 🛠️ Panduan Instalasi & Deployment (TrueNAS SCALE)
+
+Aplikasi ini dapat dibangun sebagai kontainer Docker ringan dan disebarkan secara terintegrasi pada server **TrueNAS SCALE**.
+
+### Langkah 1: Persiapan Dataset & User SMB di TrueNAS SCALE
+Sebelum memasang aplikasi, pastikan konfigurasi akun dan hak akses dataset pada Web UI TrueNAS SCALE telah diatur sesuai pedoman keamanan:
 1. **Membuat Dataset ZFS**:
    * Buka menu **Datasets** di TrueNAS SCALE.
-   * Pada pool penyimpanan Anda (misal: `ArchPoolNAS`), buatlah tiga dataset:
-     * `admin`
-     * `projects`
-     * `library`
-2. **Membuat User Group (Credentials > Local Users & Groups)**:
-   * Buat grup bernama `admin_group` (untuk Komputer Admin/Manajer).
-   * Buat grup bernama `design_group` (untuk Komputer Tim Desainer/Arsitek).
-3. **Mengatur Izin Akses (ACL)**:
-   * Pada Dataset `admin`: Berikan hak akses penuh hanya kepada grup `admin_group`. Pastikan grup `design_group` **tidak memiliki izin sama sekali (Akses Diblokir)**.
-   * Pada Dataset `projects` dan `library`: Berikan hak akses penuh (Read/Write) untuk grup `admin_group` maupun `design_group`.
+   * Buat tiga dataset terpisah pada pool Anda: `admin`, `projects`, dan `library`.
+2. **Membuat Grup Pengguna (Credentials > Local Users & Groups)**:
+   * Buat grup `admin_group` (untuk personel administratif dan pimpinan).
+   * Buat grup `design_group` (untuk tim desainer/arsitek).
+3. **Mengonfigurasi ACL (Access Control List)**:
+   * **Dataset `admin`**: Berikan hak akses penuh hanya untuk grup `admin_group`. Pastikan izin untuk grup `design_group` disetel ke **Blocked/No Access**.
+   * **Dataset `projects` & `library`**: Berikan izin Read/Write untuk kedua grup (`admin_group` & `design_group`).
+
+### Langkah 2: Penyebaran Kontainer Aplikasi (Docker)
+1. Navigasi ke menu **Apps** di TrueNAS SCALE, lalu pilih **Discover Apps** > **Custom App** (Launch Docker Image).
+2. Konfigurasikan detail kontainer berikut:
+   * **Application Name**: `mda-portal`
+   * **Container Image**: Alamat image kontainer privat Anda (misal: `torkykomputer/mda-portal:latest`).
+   * **Container Port**: `3000`
+   * **Port Forwarding (Host Port)**: `7777` (atau port pilihan Anda untuk mengakses portal melalui browser web).
+3. Atur Variabel Lingkungan (*Environment Variables*):
+   * `NODE_ENV` = `production`
+   * `GEMINI_API_KEY` = `(Kunci Server Verifikasi Cloud Anda)`
+4. Alokasikan sumber daya secara efisien (rekomendasi minimum: 0.5 vCPU dan 512MB RAM), lalu klik **Save** dan tunggu hingga status kontainer aktif (**Running**).
+
+### Langkah 3: Akses dari Komputer Klien
+Dari komputer klien di dalam jaringan LAN kantor:
+1. Buka browser web (Chrome, Edge, Firefox, atau Safari).
+2. Akses alamat IP server TrueNAS SCALE beserta port yang dikonfigurasi.
+   * *Format*: `http://[IP_SERVER_TRUENAS]:7777` (misalnya: `http://192.168.1.254:7777`).
 
 ---
 
-### Bagian 2: Deployment Kontainer Aplikasi (Docker Container)
+## 💻 Panduan Pengembangan & Otomatisasi (Developer Only)
 
-Aplikasi web full-stack ini dapat dikompilasi menjadi kontainer mandiri dan dijalankan secara native di TrueNAS SCALE:
+Bagi pengembang berlisensi yang mengelola kode sumber ini secara privat:
 
-1. **Masuk ke Menu Apps**:
-   * Di panel kiri Web UI TrueNAS SCALE, klik **Apps**.
-   * Klik tombol **Discover Apps** di pojok kanan atas, lalu pilih **Custom App** (Launch Docker Image).
-2. **Konfigurasikan Detail Aplikasi**:
-   * **Application Name:** `data-architect-mda`
-   * **Container Image:** `torkykomputer/mda-vault` (atau alamat image privat Anda setelah dikompilasi)
-   * **Container Port:** `3000`
-   * **Port Forwarding (Host Port):** Masukkan `80` (sangat direkomendasikan agar aplikasi dapat diakses langsung melalui alamat IP tanpa tambahan port `:3000`, atau port kosong lainnya sesuai kebijakan IT kantor Anda).
-3. **Konfigurasikan Environment Variables (Variabel Lingkungan)**:
-   * Tambahkan key: `GEMINI_API_KEY` -> Value: `AIzaSy...` (Kunci API Google AI Studio Anda).
-   * Tambahkan key: `NODE_ENV` -> Value: `production`.
-4. **Alokasikan Sumber Daya & Simpan**:
-   * Atur alokasi CPU dan RAM (aplikasi ini sangat ringan, cukup alokasikan 0.5 vCPU dan 512MB RAM).
-   * Klik **Save** dan tunggu status kontainer berubah dari *Deploying* menjadi **Active (Running)**.
+### 1. Prasyarat Lingkungan Lokal
+* **Node.js** v18 atau v20 LTS.
+* Manajemen paket menggunakan `npm`.
 
----
-
-### Bagian 3: Akses Aplikasi dari Komputer Klien Windows/macOS
-
-Aplikasi ini dapat diakses secara bersamaan oleh seluruh komputer di kantor tanpa perlu menginstal program tambahan apa pun pada PC lokal:
-
-1. Buka browser web (Google Chrome, Microsoft Edge, atau Safari).
-2. Ketik alamat IP TrueNAS SCALE kantor Anda (masing-masing kantor memiliki alamat IP tersendiri, misalnya `192.168.1.254`):
-   ```
-   http://[IP_SERVER_TRUENAS]
-   ```
-   *Contoh:* `http://192.168.1.254` (Ketik alamat IP langsung di browser tanpa port `:3000` tambahan jika Anda memetakan Port Forwarding Host ke port `80`).
-3. Masuk menggunakan akun root admin atau akun desainer sesuai daftar akun penguji yang tersedia.
-
----
-
-## 💻 Panduan Pengembangan & Kompilasi (Bagi Pemilik Software)
-
-Jika Anda ingin memodifikasi kode sumber atau memperbarui aplikasi sebelum mengunggahnya ke server klien, ikuti langkah-langkah di bawah ini:
-
-### Struktur Berkas Utama
-```
-├── src/
-│   ├── App.tsx          # Berkas utama aplikasi (Dashboard, Projects, Manual, dll)
-│   ├── i18n.ts          # Kamus kamus bahasa terjemahan (ID/EN)
-│   ├── main.tsx         # Entry point aplikasi React client
-│   └── index.css        # Konfigurasi Tailwind CSS global
-├── server.ts            # Kode Express Backend server (API Proxy, Gemini API, Middleware)
-├── package.json         # Dependensi dan skrip kompilasi
-└── auto_push.bat        # Skrip otomatisasi Git push milik Anda
-```
-
-### 1. Jalankan Mode Pengembangan Lokal (Development)
+### 2. Pemasangan Dependensi & Menjalankan Mode Pengembangan
+Untuk menguji aplikasi secara lokal sebelum melakukan proses deployment:
 ```bash
-# Install dependensi
+# Memasang seluruh paket dependensi
 npm install
 
-# Jalankan server lokal
+# Menjalankan server pengembangan (Express + Vite)
 npm run dev
 ```
-Aplikasi akan aktif di `http://localhost:3000`.
+Hasil kompilasi static client akan tersimpan pada direktori `/dist` dan backend server akan dibundle ke dalam `dist/server.cjs`.
 
-### 2. Kompilasi untuk Produksi (Production Build)
-Skrip build bawaan akan mengompilasi front-end React menggunakan Vite, dan membundel backend Express TypeScript menjadi satu berkas CJS yang terobfuskasi menggunakan `esbuild`:
-```bash
-npm run build
-```
-Berkas kompilasi akhir akan tersimpan dengan aman di folder `/dist`.
-
-### 3. Otomatisasi Git Push
-Gunakan skrip `auto_push.bat` yang telah kami sediakan untuk mengirimkan setiap perubahan kode terbaru ke repositori Git privat Anda secara instan hanya dengan sekali klik ganda.
-
-### 🔑 4. Generator Lisensi Offline Mandiri (Torky Keygen Suite)
-Untuk alasan keamanan siber yang mutlak, generator kode lisensi telah **dihapus seutuhnya dari aplikasi klien** untuk mengeliminasi potensi cracking, hacking, dekripsi ilegal, serta injeksi malware/ransomware. 
-
-Sebagai gantinya, kami menyediakan alat generator lisensi offline berbasis CLI khusus untuk Anda sebagai pemilik software, yang tersimpan aman di dalam repositori privat ini (`/keygen.js`). Anda dapat menjalankannya di komputer mana saja secara offline hanya dengan mengunduh repositori ini.
-
-**Cara Menjalankan Generator Lisensi Offline:**
-1. Pastikan Anda sudah berada di direktori root project.
-2. Jalankan perintah berikut di Terminal / Command Prompt Anda:
-   ```bash
-   npm run keygen
-   ```
-3. Alat interaktif berwarna akan muncul. Anda memiliki 2 opsi mudah:
-   * **Opsi 1 (Sangat Direkomendasikan):** Cukup masukkan **ID MESIN KLIEN** yang dikirimkan oleh klien Anda dari form registrasi awal aplikasi untuk mendapatkan kode lisensi aktivasi instan yang valid.
-   * **Opsi 2:** Masukkan parameter server klien secara manual (Nama Kantor, IP TrueNAS, dan Nama ZFS Pool) untuk membuat ID Mesin sekaligus Kunci Lisensi baru dari nol.
+### 3. Skrip Pengiriman Kode Instan (`auto_push.bat`)
+Gunakan utilitas pengiriman otomatis yang terintegrasi di direktori root untuk mencadangkan kode sumber Anda ke repositori Git privat secara praktis. Cukup klik ganda (double-click) pada berkas `auto_push.bat` untuk memicu proses staging, commit otomatis dengan tanda waktu, dan push langsung ke branch utama.
 
 ---
 
-## 📄 Buku Panduan Manual & Cetak PDF
+## 📖 Buku Manual Pengoperasian CDE (BIM Standard)
 
-Aplikasi ini dilengkapi dengan **Buku Manual Arsitek** terperinci di dalamnya. Pengguna/pelanggan Anda dapat mencetak buku manual ini kapan saja menjadi dokumen cetak fisik berlogo Torky Komputer:
-1. Masuk ke aplikasi dan buka tab **Buku Manual**.
-2. Klik tombol **Cetak Buku Manual (PDF)** di kanan atas.
-3. Layout otomatis dikonfigurasi menggunakan Tailwind `@media print` sehingga menghasilkan dokumen PDF yang rapi, bersih dari elemen navigasi, dan siap dijadikan lampiran serah terima pekerjaan server.
+Portal ini dilengkapi dengan modul **Buku Manual Komprehensif** terintegrasi di dalamnya untuk keperluan pelatihan staf mandiri. Modul ini dapat dicetak secara langsung atau disimpan sebagai dokumen PDF berkualitas tinggi yang ramah cetak (*print-friendly layout*), mempermudah proses training pimpinan kantor dan tim drafter di lapangan.
 
 ---
 
-*Keamanan, Kerapian, dan Efisiensi Manajemen Data adalah Kunci Keberhasilan Konstruksi Berkelas Dunia.*  
 **Developed by Torky Komputer Security Engine &copy; 2026.**

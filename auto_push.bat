@@ -107,16 +107,21 @@ echo  [2] PULL dan MERGE - Tarik dan Gabungkan
 echo      Mencoba menggabungkan berkas dari GitHub dengan berkas lokal Anda
 echo      menggunakan toleransi perbedaan riwayat secara non-blocking.
 echo.
-echo  [3] KELUAR - Batalkan
+echo  [3] INPUT GITHUB TOKEN (PAT) - KHUSUS REPOSITORI PRIVATE
+echo      Gunakan jika repositori diatur ke PRIVATE dan meminta password
+echo      atau memunculkan error 'Repository Not Found'.
+echo.
+echo  [4] KELUAR - Batalkan
 echo.
 set "opt="
-set /p opt="Masukkan pilihan Anda (1/2/3): "
+set /p opt="Masukkan pilihan Anda (1/2/3/4): "
 
 :: Bersihkan tanda kutip dari input user untuk mencegah crash syntax parser CMD Windows
 if defined opt set "opt=%opt:"=%"
 
 if "%opt%"=="1" goto DO_FORCE_PUSH
 if "%opt%"=="2" goto DO_PULL_MERGE
+if "%opt%"=="3" goto DO_AUTH_PAT
 goto ACTUAL_FAILED
 
 :DO_FORCE_PUSH
@@ -134,6 +139,43 @@ if errorlevel 1 goto ACTUAL_FAILED
 echo.
 echo [OK] Berkas berhasil digabungkan. Mencoba push kembali...
 git push origin main
+if errorlevel 1 goto ACTUAL_FAILED
+goto PUSH_SUCCESS
+
+:DO_AUTH_PAT
+echo.
+echo =====================================================================
+echo  AUTENTIKASI GITHUB PERSONAL ACCESS TOKEN (PAT)
+echo =====================================================================
+echo  Langkah membuat Token classic di GitHub:
+echo  1. Buka browser ke: https://github.com/settings/tokens
+echo  2. Klik "Generate new token" - "Generate new token (classic)"
+echo  3. Berikan nama (misal: MDA_Key), pilih kedaluwarsa (misal: 30 hari), dan
+echo     CENTANG pilihan "repo" (Full control of private repositories).
+echo  4. Klik "Generate token" di bawah, lalu SALIN kode token yang muncul
+echo     (biasanya diawali dengan 'ghp_').
+echo =====================================================================
+echo.
+set "pat_token="
+set /p pat_token="Tempel/Paste GitHub Token Anda disini: "
+if not defined pat_token (
+    echo [ERR] Token tidak boleh kosong!
+    pause
+    goto PUSH_FAILED
+)
+set "pat_token=%pat_token:"=%"
+
+echo [INFO] Mengonfigurasi kredensial remote dengan Token...
+git remote remove origin >nul 2>nul
+git remote add origin https://%pat_token%@github.com/yantorky/management_data_app.git
+echo [OK] Remote origin telah diperbarui dengan Token pengaman.
+echo.
+echo Mencoba push kembali menggunakan Token...
+git push origin main
+if errorlevel 1 (
+    echo [INFO] Push standar dengan token gagal, mencoba Force Push dengan token...
+    git push origin main --force
+)
 if errorlevel 1 goto ACTUAL_FAILED
 goto PUSH_SUCCESS
 
