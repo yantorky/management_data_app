@@ -107,7 +107,11 @@ TrueNAS SCALE mendukung peluncuran Docker Container kustom melalui menu **Apps**
 5. **Port Forwarding / Networking:**
    - Tambahkan aturan Port Forwarding.
    - **Container Port**: `3000` (Sesuai port internal server MDA).
-   - **Node Port**: `3000` (Port luar yang akan diakses oleh komputer klien di kantor, misal: `http://192.168.1.150:3000`).
+   - **Node Port / Host Port**: `3030` (Port luar yang akan diakses oleh komputer klien di kantor, misal: `http://192.168.1.150:3030`).
+   - *Catatan Perintah Docker CLI*: Jika menjalankan via terminal command line:
+     ```bash
+     docker run -d -p 3030:3000 --name mda-app --restart always torky/mda:latest
+     ```
 6. **Environment Variables:**
    - Tambahkan variabel lingkungan jika diperlukan (seperti `NODE_ENV=production`).
 7. **Storage/Volume Mounts (Opsional):**
@@ -129,7 +133,7 @@ Sistem MDA dilengkapi dengan mekanisme pertahanan enkripsi lisensi offline yang 
 
 ### 2.1 Alur Pengambilan Machine ID
 1. Setelah aplikasi berhasil di-deploy di TrueNAS SCALE, buka browser dari komputer manapun di jaringan kantor dan akses:
-   `http://<IP_TRUENAS_SCALE>:3000`
+   `http://<IP_TRUENAS_SCALE>:3030`
 2. Sistem akan mendeteksi bahwa instalasi masih baru dan langsung menampilkan **Setup Wizard (Inisialisasi Awal Sistem)**.
 3. Isi kolom nama firma, konfigurasi IP Samba, dan nama Pool.
 4. Di bagian bawah form Setup, Anda akan melihat kotak abu-abu bertuliskan **TrueNAS Machine ID (Client Fingerprint)**.

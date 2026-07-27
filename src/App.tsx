@@ -1217,38 +1217,14 @@ Raw Notes:
 
                   {/* Bagian 2: Input Kunci Lisensi */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-1 flex-wrap">
+                    <div className="flex items-center justify-between">
                       <label className="text-[10px] uppercase font-bold text-amber-400 flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-amber-500" /> {t.setupLicenseKey}
                       </label>
-                      <button
-                        type="button"
-                        onClick={handleAutoGenerateSetupLicense}
-                        className="text-[9px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-lg uppercase tracking-wider font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-sm"
-                        title="Klik untuk generate lisensi instan sesuai Hardware Machine ID"
-                      >
-                        <Zap className="w-3 h-3 text-amber-400 animate-pulse" /> {t.autoGenerateLicenseBtn}
-                      </button>
+                      <span className="text-[8px] bg-amber-500/15 text-amber-400 border border-amber-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold flex items-center gap-1">
+                        <Lock className="w-2.5 h-2.5" /> Hardware-Locked (Yan Torky)
+                      </span>
                     </div>
-                    
-                    {licenseGenToast && (
-                      <div className="p-2 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-emerald-300 text-[10px] font-mono flex items-center justify-between gap-1.5 animate-fade-in shadow-lg">
-                        <div className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>{t.licenseGeneratedSuccess}</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const mId = generateMachineId(setupData.companyName, setupData.sambaIp, setupData.sambaPool);
-                            downloadLicenseJson(mId, setupData.licenseKey);
-                          }}
-                          className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-500/40 px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-bold transition-all cursor-pointer shrink-0"
-                        >
-                          Unduh JSON
-                        </button>
-                      </div>
-                    )}
 
                     <input
                       type="text"
