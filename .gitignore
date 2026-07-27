@@ -12,3 +12,7 @@ keygen.cjs
 keygen.js
 generate.bat
 
+# System / Redirect files
+nul
+NUL
+

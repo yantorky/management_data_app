@@ -75,6 +75,9 @@ git config --local user.email "torkykomputer@gmail.com"
 echo [OK] Identitas diatur ke: Yan Torky (torkykomputer@gmail.com)
 echo.
 
+REM Membersihkan berkas residu nul jika terbuat akibat pengalihan output Windows
+if exist "nul" del /f /q /a "nul" >nul 2>&1
+
 echo [1/5] Memeriksa status berkas lokal...
 git status -s
 echo.
