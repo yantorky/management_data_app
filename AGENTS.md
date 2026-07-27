@@ -19,3 +19,13 @@ SOP ini wajib dipatuhi oleh Agen AI dalam setiap interaksi dan pengembangan apli
     - **Komputer Admin Kantor**: Diizinkan melihat dan mengedit datasheet `admin`, `projects`, dan `library`.
     - **Komputer Desainer (Design Team)**: Hanya diizinkan melihat dan mengedit datasheet `projects` dan `library` (Akses ke `admin` diblokir total secara sistem).
   - **Konfigurasi Fleksibel**: Parameter IP Address, Pool Name (Samba Pool), dan Status Mapping harus bersifat umum/konfigurabel, tidak boleh di-hardcode ke satu nama kantor atau pool tertentu (seperti AreaNas, StaNas, APNAS), melainkan memberikan panduan instruksi penyesuaian yang jelas.
+
+## 4. Trigger Perintah Khusus (Pindah & Unggah Repositori)
+- **Pemicu (Trigger Phrase)**: Jika pengguna mengirimkan pesan berisi atau mirip dengan:
+  `"tolong siapkan saya mau pindah edit kode dan upload perbaruan repository"`
+- **Tindakan Agen (Immediate Action)**:
+  1. **Langsung Paham**: Agen harus langsung mengerti bahwa pengguna ingin beralih ke pengerjaan lokal (di laptop/PC sendiri) dan ingin mensinkronkan seluruh perubahan kode terbaru ke repositori GitHub privat miliknya (`https://github.com/yantorky/management_data_app.git`).
+  2. **Verifikasi Kesiapan**: Lakukan linting (`lint_applet`) dan kompilasi (`compile_applet`) secara otomatis untuk memastikan aplikasi dalam kondisi 100% bebas dari error sintaks/build sebelum diunggah.
+  3. **Siapkan Script**: Pastikan file `/Auto_Push.bat` tersedia dengan konfigurasi baris akhir CRLF (Windows format) dan fungsionalitas pembersihan file kunci (`.lock`) serta opsi *Force Push* / *PAT Token* tetap prima.
+  4. **Eksekusi & Instruksi Mandiri**: Berikan instruksi singkat, padat, dan jelas mengenai cara pengguna menjalankan `Auto_Push.bat` di komputer lokal mereka untuk menarik (pull) atau mendorong (push) kode tanpa perlu meminta konfirmasi berulang kali.
+
