@@ -21,8 +21,8 @@ if errorlevel 1 goto NO_GIT
 
 REM Mengatasi error "dubious ownership" (safe.directory) di sistem berkas TrueNAS/Samba/Network Share
 echo [INFO] Mengonfigurasi pengecualian direktori aman (safe.directory)...
-git config --global safe.directory "*" >nul 2>&1
-git config safe.directory "*" >nul 2>&1
+git config --global --replace-all safe.directory "*" >nul 2>&1
+git config --replace-all safe.directory "*" >nul 2>&1
 echo [OK] Izin direktori aman berhasil diaktifkan.
 echo.
 
