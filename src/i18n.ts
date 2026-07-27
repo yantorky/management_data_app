@@ -85,6 +85,10 @@ export interface TranslationSet {
   copyIdSuccess: string;
   machineIdHint: string;
   devOnlyBtn: string;
+  autoGenerateLicenseBtn: string;
+  licenseGeneratedSuccess: string;
+  licenseGeneratorTitle: string;
+  licenseGeneratorDesc: string;
   setupBtn: string;
   setupBimCompliance: string;
   setupPasswordTooShort: string;
@@ -228,6 +232,10 @@ export const translations: Record<Language, TranslationSet> = {
     copyIdSuccess: "Copied!",
     machineIdHint: "Send the Machine ID above to Yan Torky (Torky Komputer) to get your valid activation License Key.",
     devOnlyBtn: "Yan Torky Developer Suite",
+    autoGenerateLicenseBtn: "⚡ Auto-Generate License (Yan Torky Suite)",
+    licenseGeneratedSuccess: "License key successfully generated and applied automatically!",
+    licenseGeneratorTitle: "Torky Komputer License Generator Suite",
+    licenseGeneratorDesc: "Generate offline hardware-locked license key for any TrueNAS client Machine ID.",
     setupBtn: "Register Account & Initialize System",
     setupBimCompliance: "This initialization automatically applies ISO 19650-1 & 19650-2 BIM standards compliance to local databases.",
     setupPasswordTooShort: "Password is too short. Please enter at least 6 characters for enterprise-level data protection.",
@@ -365,6 +373,10 @@ export const translations: Record<Language, TranslationSet> = {
     copyIdSuccess: "Tersalin!",
     machineIdHint: "Kirimkan ID Mesin di atas ke Yan Torky (Torky Komputer) untuk mendapatkan Kunci Lisensi resmi yang valid.",
     devOnlyBtn: "Khusus Developer Yan Torky",
+    autoGenerateLicenseBtn: "⚡ Auto-Generate Lisensi Instan (Yan Torky)",
+    licenseGeneratedSuccess: "Kunci lisensi berhasil di-generate dan diterapkan secara otomatis!",
+    licenseGeneratorTitle: "Suite Generator Lisensi Torky Komputer",
+    licenseGeneratorDesc: "Hasilkan kunci lisensi terenkripsi offline untuk Machine ID TrueNAS klien.",
     setupBtn: "Daftarkan Akun & Inisialisasi Sistem",
     setupBimCompliance: "Sistem inisialisasi ini menerapkan kepatuhan BIM Standard ISO 19650-1 & 19650-2 secara otomatis pada database lokal.",
     setupPasswordTooShort: "Kata sandi terlalu pendek. Masukkan minimal 6 karakter demi perlindungan keamanan data perusahaan.",

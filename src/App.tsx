@@ -35,6 +35,8 @@ import {
   Server,
   Key,
   Printer,
+  Zap,
+  CheckCircle2,
   FileText as FileIcon
 } from 'lucide-react';
 import {
@@ -233,6 +235,44 @@ export default function App() {
 
 
   const [copyFeedback, setCopyFeedback] = useState(false);
+  const [licenseGenToast, setLicenseGenToast] = useState(false);
+
+  // Standalone Admin License Generator state
+  const [adminGenMachineId, setAdminGenMachineId] = useState('');
+  const [adminGenResultKey, setAdminGenResultKey] = useState('');
+  const [adminGenCopyFeedback, setAdminGenCopyFeedback] = useState(false);
+
+  const handleAutoGenerateSetupLicense = () => {
+    const mId = generateMachineId(setupData.companyName, setupData.sambaIp, setupData.sambaPool);
+    const genKey = generateLicenseFromMachineId(mId);
+    setSetupData(prev => ({ ...prev, licenseKey: genKey }));
+    setLicenseGenToast(true);
+    setTimeout(() => setLicenseGenToast(false), 3500);
+  };
+
+  const handleAdminGenerateLicense = (mId: string) => {
+    if (!mId.trim()) return;
+    const generatedKey = generateLicenseFromMachineId(mId.trim());
+    setAdminGenResultKey(generatedKey);
+  };
+
+  const downloadLicenseJson = (mId: string, lKey: string) => {
+    const payload = {
+      licenseKey: lKey,
+      machineId: mId,
+      companyName: setupData.companyName || companyName || 'MDA Client',
+      vendor: 'Torky Komputer (Yan Torky)',
+      version: 'MDA-2026-SECURITY-VAULT',
+      generatedAt: new Date().toISOString()
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `license-${mId.substring(0, 16)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
 
   const [showSetupPassword, setShowSetupPassword] = useState(false);
   const [showSetupConfirmPassword, setShowSetupConfirmPassword] = useState(false);
@@ -1177,14 +1217,39 @@ Raw Notes:
 
                   {/* Bagian 2: Input Kunci Lisensi */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-1 flex-wrap">
                       <label className="text-[10px] uppercase font-bold text-amber-400 flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-amber-500" /> {t.setupLicenseKey}
                       </label>
-                      <span className="text-[8px] bg-amber-500/15 text-amber-400 border border-amber-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold flex items-center gap-1">
-                        <Lock className="w-2.5 h-2.5" /> Hardware-Locked
-                      </span>
+                      <button
+                        type="button"
+                        onClick={handleAutoGenerateSetupLicense}
+                        className="text-[9px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-lg uppercase tracking-wider font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                        title="Klik untuk generate lisensi instan sesuai Hardware Machine ID"
+                      >
+                        <Zap className="w-3 h-3 text-amber-400 animate-pulse" /> {t.autoGenerateLicenseBtn}
+                      </button>
                     </div>
+                    
+                    {licenseGenToast && (
+                      <div className="p-2 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-emerald-300 text-[10px] font-mono flex items-center justify-between gap-1.5 animate-fade-in shadow-lg">
+                        <div className="flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{t.licenseGeneratedSuccess}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const mId = generateMachineId(setupData.companyName, setupData.sambaIp, setupData.sambaPool);
+                            downloadLicenseJson(mId, setupData.licenseKey);
+                          }}
+                          className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-500/40 px-2 py-0.5 rounded text-[8px] uppercase tracking-wider font-bold transition-all cursor-pointer shrink-0"
+                        >
+                          Unduh JSON
+                        </button>
+                      </div>
+                    )}
+
                     <input
                       type="text"
                       required
@@ -3169,6 +3234,66 @@ Raw Notes:
                 >
                   Uji Koneksi Server
                 </button>
+              </div>
+
+              {/* License Generator Card (Torky Komputer Admin Suite) */}
+              <div className="bg-slate-950 border border-amber-500/30 rounded-2xl p-5 space-y-4 shadow-xl relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-amber-500" /> {t.licenseGeneratorTitle}
+                  </h3>
+                  <span className="text-[8px] bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-extrabold font-mono">OFFLINE VAULT</span>
+                </div>
+                <p className="text-[10px] text-slate-400 leading-relaxed">
+                  {t.licenseGeneratorDesc}
+                </p>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-[9px] uppercase font-bold text-slate-400">Target TrueNAS Machine ID</label>
+                    <input
+                      type="text"
+                      value={adminGenMachineId}
+                      onChange={e => {
+                        setAdminGenMachineId(e.target.value);
+                        handleAdminGenerateLicense(e.target.value);
+                      }}
+                      placeholder="e.g., MDA-HW-TORK-1921681150-POOL"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-amber-300 font-mono mt-1 focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  {adminGenResultKey && (
+                    <div className="p-3 bg-slate-900/80 border border-amber-500/30 rounded-xl space-y-2 animate-fade-in">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-bold uppercase text-amber-400">Kunci Lisensi Ter-Generate</span>
+                        <span className="text-[8px] text-emerald-400 font-mono flex items-center gap-1">
+                          <CheckCircle2 className="w-2.5 h-2.5" /> VALID
+                        </span>
+                      </div>
+                      <div className="bg-slate-950 p-2 rounded-lg text-xs font-mono text-amber-300 border border-slate-800 select-all break-all">
+                        {adminGenResultKey}
+                      </div>
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={() => {
+                            copyToClipboard(adminGenResultKey);
+                            setAdminGenCopyFeedback(true);
+                            setTimeout(() => setAdminGenCopyFeedback(false), 2000);
+                          }}
+                          className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition-all"
+                        >
+                          {adminGenCopyFeedback ? t.copyIdSuccess : 'Salin Lisensi'}
+                        </button>
+                        <button
+                          onClick={() => downloadLicenseJson(adminGenMachineId, adminGenResultKey)}
+                          className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition-all"
+                        >
+                          Unduh JSON
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Mapping Details */}

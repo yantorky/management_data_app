@@ -135,17 +135,22 @@ Sistem MDA dilengkapi dengan mekanisme pertahanan enkripsi lisensi offline yang 
 4. Di bagian bawah form Setup, Anda akan melihat kotak abu-abu bertuliskan **TrueNAS Machine ID (Client Fingerprint)**.
 5. Klik tombol **Salin Machine ID** untuk menduplikasi kode unik enkripsi tersebut ke clipboard Anda.
 
-### 2.2 Prosedur Generator Lisensi Offline
-Sebagai penyedia solusi IT (Torky Komputer), Anda dapat menggenerate kunci lisensi resmi secara offline di komputer teknisi Anda:
+### 2.2 Dua Opsi Prosedur Generator Lisensi (UI Instan & Skrip Offline)
 
-1. Buka folder hasil ekstraksi file ZIP aplikasi MDA di komputer Anda.
-2. Cari file bernama `generate.bat` dan jalankan dengan klik ganda (*double click*).
-3. Generator otomatis akan mendeteksi runtime Node.js dan membuka konsol keamanan interaktif.
-4. Paste (tempel) **TrueNAS Machine ID** yang disalin dari klien tadi pada kolom yang disediakan, lalu tekan **Enter**.
-5. Sistem akan memproses hash biner tingkat tinggi secara instan dan memunculkan **KUNCI LISENSI AMAN** dalam format:
-   `TORKY-SECURE-2026-MDA-XXXXXX`
-6. Salin Kunci Lisensi tersebut dan masukkan ke dalam kolom **Kunci Lisensi Resmi** pada Setup Wizard di web browser klien.
-7. Klik **Selesaikan Instalasi & Terapkan Lisensi**. Sistem akan langsung aktif secara permanen!
+Sebagai penyedia solusi IT (Torky Komputer / Yan Torky), Anda memiliki **2 Metode Resmi** untuk meng-generate Kunci Lisensi:
+
+#### METODE A: Auto-Generate Instan Langsung di UI Web (Sangat Praktis)
+1. Pada form **Setup Wizard**, di atas kolom Kunci Lisensi, klik tombol kuning bertuliskan **`⚡ Auto-Generate Lisensi Instan (Yan Torky)`**.
+2. Sistem akan langsung menghitung sidik jari perangkat keras TrueNAS (`MDA-HW-...`) secara kriptografis dan otomatis mengisikan Kunci Lisensi yang sah ke dalam form.
+3. Klik tombol **Unduh JSON** untuk menyimpan file bukti lisensi (`license-XXXX.json`) sebagai arsip bukti aktivasi resmi klien.
+4. Klik **Daftarkan Akun & Inisialisasi Sistem** untuk mengaktifkan sistem secara permanen.
+*(Catatan: Fitur generator di UI juga tersedia kapan saja untuk Super Admin pada Tab "Konfigurasi TrueNAS & Samba Share").*
+
+#### METODE B: Generator Lisensi Offline lewat PC Lokal (`generate.bat`)
+1. Buka folder proyek aplikasi MDA di laptop/PC lokal Anda.
+2. Klik ganda file **`generate.bat`** (atau jalankan `node keygen.js [Machine_ID]`).
+3. Tempel (paste) **TrueNAS Machine ID** klien pada konsol keamanan yang muncul, lalu tekan **Enter**.
+4. Salin Kunci Lisensi yang dihasilkan (`TORKY-SECURE-2026-MDA-XXXXXX`), masukkan ke form aktivasi klien, lalu selesaikan instalasi.
 
 ---
 
